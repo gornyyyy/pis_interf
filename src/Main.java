@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+
 class DateInfo
 {
     int dd;
@@ -31,14 +32,16 @@ class Patient
     DateInfo birth_date;
     String phone;
     double temperature;
+    String skin_color;
 
-    public Patient(String passport, String name, DateInfo birth_date, String phone, double temperature)
+    public Patient(String passport, String name, DateInfo birth_date, String phone, double temperature, String skin_color)
     {
         this.passport = passport;
         this.name = name;
         this.birth_date = birth_date;
         this.phone = phone;
         this.temperature = temperature;
+        this.skin_color = skin_color;
     }
 
     @Override
@@ -48,7 +51,8 @@ class Patient
                 "Имя: " + name + "\n" +
                 "Дата рождения: " + birth_date + "\n" +
                 "Телефон: " + phone + "\n" +
-                "Температура: " + String.format("%.2f", temperature);
+                "Температура: " + String.format("%.2f", temperature) + "\n" +
+                "Цвет кожи; " + skin_color;
     }
 }
 
@@ -65,10 +69,10 @@ void main()
         String name = getValidName(scanner);
         DateInfo birth_date = getValidDate(scanner);
         String phone = getValidPhone(scanner);
-        System.out.print("Введите температуру: ");
-        double temperature = scanner.nextDouble();
+        double temperature = getValidTemperature(scanner);
+        String skin_color = getValidSkinColor(scanner);
 
-        Patient patient = new Patient(passport, name, birth_date, phone, temperature);
+        Patient patient = new Patient(passport, name, birth_date, phone, temperature, skin_color);
         patients.add(patient);
 
         System.out.println("Данные успешно сохранены");
@@ -153,5 +157,24 @@ double getValidTemperature(Scanner scanner) {
             return Double.parseDouble(input);
         }
         System.out.println("Ошибка: неверный формат температуры. Попробуйте снова.\n");
+    }
+}
+
+String getValidSkinColor(Scanner scanner) {
+    while (true) {
+        System.out.print("Введите цвет кожи в формате RGB (от 0 до 255 три числа через пробел): ");
+        String input = scanner.nextLine().trim();
+
+        if (Pattern.matches("^\\d{1,3} \\d{1,3} \\d{1,3}$", input)) {
+            String[] parts = input.split(" ");
+            int r = Integer.parseInt(parts[0]);
+            int g = Integer.parseInt(parts[1]);
+            int b = Integer.parseInt(parts[2]);
+
+            if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
+                return input;
+            }
+        }
+        System.out.println("Ошибка: неверный формат. Каждое значение должно быть от 0 до 255. Попробуйте снова.\n");
     }
 }
