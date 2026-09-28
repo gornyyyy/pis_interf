@@ -69,7 +69,7 @@ void main()
         String name = getValidName(scanner);
         DateInfo birth_date = getValidDate(scanner);
         String phone = getValidPhone(scanner);
-        System.out.println("Добавьте температуру: ");
+        System.out.print("Добавьте температуру: ");
         double temperature = scanner.nextDouble();
         String skin_color = getValidSkinColor(scanner);
 
