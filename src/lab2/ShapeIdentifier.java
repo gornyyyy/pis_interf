@@ -58,28 +58,20 @@ public class ShapeIdentifier {
         }
     }
 
-    // регулярки
-
-    static final Pattern PointPattern = Pattern.compile("^\\\\s*Point\\\\s*\\\\(\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*," +
-            "\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*\\\\)\\\\s*$");
-
-    static final Pattern LinePattern = Pattern.compile("^\\\\s*Line\\\\s*\\\\(\\\\s*\" +\n" +
-            "\"Point\\\\s*\\\\(\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*,\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*\\\\)\\\\s*,\\\\s*\" +\n" +
-            "\"Point\\\\s*\\\\(\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*,\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*\\\\)\\\\s*\\\\)\\\\s*$");
-
-    static final Pattern CirclePattern = Pattern.compile("^\\\\s*Circle\\\\s*\\\\(\\\\s*\" +\n" +
-            "\"Point\\\\s*\\\\(\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*,\\\\s*([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*\\\\)\\\\s*,\\\\s*\" +\n" +
-            "\"([-+]?\\\\d*\\\\.?\\\\d+)\\\\s*\\\\)\\\\s*$");
-
-
     void main(String[] argv) {
         CliArgs args = new CliArgs();
 
         try {
-            JCommander.newBuilder()
+            JCommander jc = JCommander.newBuilder()
                     .addObject(args)
-                    .build()
-                    .parse(argv);
+                    .build();
+
+            jc.parse(argv);
+
+            if (args.help) {
+                jc.usage();
+                System.exit(0);
+            }
 
             if (args.filePath == null) {
                 System.err.println("Ошибка: не указан путь к файлу (-f или --file)");
@@ -115,15 +107,23 @@ public class ShapeIdentifier {
                 case "print":
                     for (Shape shape : shapes) System.out.println(shape);
                     break;
-                case "count":
-                    System.out.println(shapes.size());
+                case "count": {
+                    int points = 0, lines = 0, circles = 0;
+                    for (Shape shape : shapes) {
+                        if (shape instanceof Point)        points++;
+                        else if (shape instanceof Line)    lines++;
+                        else if (shape instanceof Circle)  circles++;
+                    }
+                    System.out.println("Всего: " + shapes.size());
+                    System.out.println("Точек: " + points);
+                    System.out.println("Строк: " + lines);
+                    System.out.println("Кругов: " + circles);
                     break;
+                }
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }
     }
-
-
 }

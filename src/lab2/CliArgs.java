@@ -8,4 +8,7 @@ public class CliArgs {
 
     @Parameter(names = {"-o", "--oper"}, description = "Операция: print или count", required = true)
     public String operation;
+
+    @Parameter(names = {"-h", "--help"}, help = true, description = "Показать справку")
+    public boolean help;
 }
